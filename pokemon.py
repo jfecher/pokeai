@@ -120,8 +120,45 @@ def parse_update(msg, p1, p2, format):
         # p1 and p2 are defined
         else:
             if l.startswith('|switch|'):
+                regex = re.compile(r'\|switch\|(p1|p2)a: (\w+)\|.+\|(\d+)/100')
+                match = regex.match(l)
+                if match:
+                    p_name, poke, hp = match.groups()
+                    if p_name == "p1":
+                        p1.update_switch(poke, hp)
+                        p2.update_enemy_switch(poke, hp)
+                    else:
+                        p1.update_enemy_switch(poke, hp)
+                        p2.update_switch(poke, hp)
+
                 updates += l
-            else:
+
+            elif l.startswith('|-enditem|'):
+                regex = re.compile(r'\|-enditem\|(p1|p2)a')
+                match = regex.match(l)
+                if match:
+                    p_name = match.groups()
+                    if p_name == "p1":
+                        p1.update_remove_item()
+                        p2.update_enemy_remove_item()
+                    else:
+                        p1.update_enemy_remove_item()
+                        p2.update_remove_item()
+
+
+            elif l.startswith('|-damage|'):
+                regex = re.compile(r'\|-damage\|(p1|p2)a: (\w+)\|(\d+)/100')
+                match = regex.match(l)
+                if match:
+                    p_name, poke, hp = match.groups()
+                    if p_name == "p1":
+                        p1.update_hp(poke, hp)
+                        p2.update_enemy_hp(poke, hp)
+                    else: 
+                        p1.update_enemy_hp(poke, hp)
+                        p2.update_hp(poke, hp)
+
+            elif not l.startswith('|request|') and l != 'sideupdate\n' and l != 'p1\n' and l != 'p2\n':
                 updates += l
 
     # p1.update(updates)
