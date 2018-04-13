@@ -57,4 +57,6 @@ while True:
     if msg:
         if msg.startswith('sideupdate'):
             pokemon.parse_sideupdate(msg)
+        else:
+            print(msg)
 

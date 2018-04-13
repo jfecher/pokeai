@@ -30,16 +30,20 @@ class Pokemon():
 
 
 def parse_sideupdate(msg):
-    updates_re = re.compile(r'sideupdate\n.+\n.+\n\n')
-    updates = updates_re.findall(msg)
+    lines = re.compile(r'.*\n').findall(msg)
 
-    lines = re.compile(r'.*\n')
-
-    braces = re.compile(r'\{.*\}', re.M)
-    for update in updates:
-        l = lines.findall(update)[2]
+    for l in lines:
         if l.startswith('|request|'):
             l = l[9:]
 
-        j = json.loads(l)
-        print(json.dumps(j, sort_keys=True, indent=4, separators=(',', ': ')))
+            j = json.loads(l)
+            for i in j['side']['pokemon']:
+                print(i['ident'], end='\t')
+                print(i['moves'])
+            print('')
+
+        else:
+            print(l, end='')
+            continue
+
+        # print(json.dumps(j, sort_keys=False, indent=4, separators=(',', ': ')))
