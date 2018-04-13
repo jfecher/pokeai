@@ -8,6 +8,8 @@ import pokemon
 process = os.path.abspath("Pokemon-Showdown/pokemon-showdown")
 showdown = subprocess.Popen([process, "simulate-battle"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
+battle_format = "gen7randombattle"
+
 def enqueue_output(out, queue):
     while True:
         for line in iter(out.readline, b''):
@@ -41,13 +43,14 @@ showdown_thread.daemon = True
 showdown_thread.start()
 
 
-send_msg('start {"formatid":"gen7randombattle"}')
+send_msg('start {"formatid":"' + battle_format + '"}')
 send_msg('player p1 {"name":"bot1"}')
 send_msg('player p2 {"name":"bot2"}')
 
-send_msg('p1 move 1')
-send_msg('p2 move 1')
 print_backlog()
+
+p1 = ""
+p2 = ""
 
 while True:
     move = input("> ")
@@ -55,8 +58,9 @@ while True:
 
     msg = receive_msg()
     if msg:
-        if msg.startswith('sideupdate'):
-            pokemon.parse_sideupdate(msg)
-        else:
-            print(msg)
+        p1, p2, updates = pokemon.parse_update(msg, p1, p2, battle_format)
+        print(p1)
+        print(p2)
+        if updates:
+            print(updates)
 
