@@ -1,0 +1,7 @@
+>start {"formatid":"gen7randombattle"}
+>player p1 {"name":"Alice"}
+>player p2 {"name":"Bob"}
+>p1 move 1
+>p2 switch 3
+>p1 move 3
+>pw move 2
