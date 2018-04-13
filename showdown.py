@@ -3,6 +3,8 @@ import subprocess
 from threading import Thread
 from queue import Queue, Empty
 
+import pokemon
+
 process = os.path.abspath("Pokemon-Showdown/pokemon-showdown")
 showdown = subprocess.Popen([process, "simulate-battle"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -51,11 +53,8 @@ while True:
     move = input("> ")
     send_msg(move)
 
-    try:
-        msg = receive_msg()
-        if msg:
-            print(msg)
-    except:
-        print('Couldn\'t receive_msg')
-
+    msg = receive_msg()
+    if msg:
+        if msg.startswith('sideupdate'):
+            pokemon.parse_sideupdate(msg)
 
